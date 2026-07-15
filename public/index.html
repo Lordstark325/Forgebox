@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ForgeBox</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside><div class="brand"><span>F</span> ForgeBox</div><nav><button class="active">▦ Containers</button><button disabled>◇ Images</button><button disabled>◉ Volumes</button><button disabled>⌁ Networks</button></nav><p class="version">Your engine. Your rules.<br>v0.1.0</p></aside>
+  <main>
+    <header><div><p class="eyebrow">LOCAL RUNTIME</p><h1>Containers</h1></div><div id="status" class="status"><i></i> Checking engine…</div></header>
+    <section class="summary"><div><label>All containers</label><strong id="total">—</strong></div><div><label>Running</label><strong id="running">—</strong></div><button id="refresh">↻ Refresh</button></section>
+    <section class="panel"><div class="panel-head"><h2>Your workloads</h2><input id="search" placeholder="Search containers"></div><div id="content" class="content"><div class="empty">Loading containers…</div></div></section>
+  </main>
+  <dialog id="logs"><div class="dialog-head"><strong id="log-title">Logs</strong><button onclick="logs.close()">×</button></div><pre id="log-output"></pre></dialog>
+  <script src="app.js"></script>
+</body></html>
