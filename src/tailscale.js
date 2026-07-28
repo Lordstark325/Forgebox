@@ -1,8 +1,23 @@
 'use strict';
 
+const fs = require('node:fs');
+const path = require('node:path');
 const { spawn } = require('node:child_process');
 
-const TAILSCALE = process.env.FORGEBOX_TAILSCALE || 'tailscale';
+function resolveBinary() {
+  if (process.env.FORGEBOX_TAILSCALE) return process.env.FORGEBOX_TAILSCALE;
+  if (process.platform === 'win32') {
+    const candidates = [
+      process.env.ProgramFiles && path.join(process.env.ProgramFiles, 'Tailscale', 'tailscale.exe'),
+      process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, 'Tailscale', 'tailscale.exe')
+    ].filter(Boolean);
+    const installed = candidates.find(candidate => fs.existsSync(candidate));
+    if (installed) return installed;
+  }
+  return 'tailscale';
+}
+
+const TAILSCALE = resolveBinary();
 const MAX_OUTPUT = 1024 * 1024;
 
 function run(args, timeout = 20000) {
@@ -33,6 +48,20 @@ function parseJson(output, fallback = {}) {
   return text ? JSON.parse(text) : fallback;
 }
 
+function buildShareArgs({ localPort, httpsPort, path: servePath }) {
+  const args = ['serve', '--bg', '--yes', `--https=${httpsPort}`];
+  if (servePath !== '/') args.push(`--set-path=${servePath}`);
+  args.push(`http://127.0.0.1:${localPort}`);
+  return args;
+}
+
+function buildUnshareArgs({ httpsPort, path: servePath }) {
+  const args = ['serve', `--https=${httpsPort}`];
+  if (servePath !== '/') args.push(`--set-path=${servePath}`);
+  args.push('off');
+  return args;
+}
+
 async function status() {
   const data = parseJson(await run(['status', '--json']));
   const self = data.Self || {};
@@ -51,20 +80,20 @@ async function serveStatus() {
   return { config };
 }
 
-async function share({ localPort, httpsPort, path }) {
-  const args = ['serve', '--bg', '--yes', `--https=${httpsPort}`];
-  if (path !== '/') args.push(`--set-path=${path}`);
-  args.push(`http://127.0.0.1:${localPort}`);
-  await run(args, 60000);
+async function share(options) {
+  await run(buildShareArgs(options), 60000);
   return serveStatus();
 }
 
-async function unshare({ httpsPort, path }) {
-  const args = ['serve', `--https=${httpsPort}`];
-  if (path !== '/') args.push(`--set-path=${path}`);
-  args.push('off');
-  await run(args, 60000);
+async function unshare(options) {
+  await run(buildUnshareArgs(options), 60000);
   return serveStatus();
 }
 
-module.exports = { status, serveStatus, share, unshare };
+module.exports = {
+  status,
+  serveStatus,
+  share,
+  unshare,
+  _test: { buildShareArgs, buildUnshareArgs, parseJson }
+};
