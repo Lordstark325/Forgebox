@@ -1,11 +1,12 @@
 {
   "name": "forgebox",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "A Docker-compatible container manager you control",
+  "description": "A Docker-compatible container manager and private Tailscale app server",
   "scripts": {
     "start": "node src/server.js",
-    "check": "node --check src/server.js"
+    "check": "node --check src/server.js && node --check src/tailscale.js && node --check public/app.js",
+    "test": "node --test"
   },
   "engines": { "node": ">=20" },
   "license": "Apache-2.0"

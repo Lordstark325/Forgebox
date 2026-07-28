@@ -5,12 +5,48 @@
   <title>ForgeBox</title><link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <aside><div class="brand"><span>F</span> ForgeBox</div><nav><button class="active">▦ Containers</button><button disabled>◇ Images</button><button disabled>◉ Volumes</button><button disabled>⌁ Networks</button></nav><p class="version">Your engine. Your rules.<br>v0.1.0</p></aside>
+  <aside>
+    <div class="brand"><span>F</span> ForgeBox</div>
+    <nav>
+      <a class="active" href="#containers">▦ Containers</a>
+      <a href="#tailnet">⌁ Tailnet hosting</a>
+      <button disabled>◇ Images</button>
+      <button disabled>◉ Volumes</button>
+    </nav>
+    <p class="version">Your engine. Your network.<br>v0.2.0</p>
+  </aside>
   <main>
-    <header><div><p class="eyebrow">LOCAL RUNTIME</p><h1>Containers</h1></div><div id="status" class="status"><i></i> Checking engine…</div></header>
-    <section class="summary"><div><label>All containers</label><strong id="total">—</strong></div><div><label>Running</label><strong id="running">—</strong></div><button id="refresh">↻ Refresh</button></section>
-    <section class="panel"><div class="panel-head"><h2>Your workloads</h2><input id="search" placeholder="Search containers"></div><div id="content" class="content"><div class="empty">Loading containers…</div></div></section>
+    <header><div><p class="eyebrow">LOCAL RUNTIME</p><h1>ForgeBox server</h1></div><div id="status" class="status"><i></i> Checking engine…</div></header>
+
+    <section id="containers">
+      <div class="section-title"><div><p class="eyebrow">WORKLOADS</p><h2>Containers</h2></div><button id="refresh">↻ Refresh</button></div>
+      <div class="summary"><div><label>All containers</label><strong id="total">—</strong></div><div><label>Running</label><strong id="running">—</strong></div></div>
+      <div class="panel"><div class="panel-head"><h3>Your workloads</h3><input id="search" placeholder="Search containers"></div><div id="content" class="content"><div class="empty">Loading containers…</div></div></div>
+    </section>
+
+    <section id="tailnet">
+      <div class="section-title"><div><p class="eyebrow">PRIVATE NETWORK</p><h2>Tailscale hosting</h2></div><div id="tail-status" class="status"><i></i> Checking Tailscale…</div></div>
+      <div class="tail-grid">
+        <div class="panel tail-info">
+          <h3>Tailnet server</h3>
+          <p>Expose a local container port privately over your tailnet with automatic HTTPS. Public Funnel access is intentionally disabled.</p>
+          <dl><div><dt>Device</dt><dd id="tail-device">—</dd></div><div><dt>Tailnet</dt><dd id="tail-name">—</dd></div><div><dt>Address</dt><dd id="tail-address">—</dd></div></dl>
+        </div>
+        <form id="share-form" class="panel share-form">
+          <h3>Publish an app</h3>
+          <label>Local container port<input id="local-port" type="number" min="1" max="65535" placeholder="3000" required></label>
+          <label>Tailnet HTTPS port<input id="https-port" type="number" min="1" max="65535" value="443" required></label>
+          <label>URL path<input id="serve-path" value="/" pattern="/[A-Za-z0-9._~/-]*" required></label>
+          <button id="share-button" type="submit">Share privately</button>
+          <p id="share-message" class="form-message"></p>
+        </form>
+      </div>
+      <div class="panel serve-panel">
+        <div class="panel-head"><h3>Active Tailscale Serve configuration</h3><button id="tail-refresh">↻ Refresh</button></div>
+        <pre id="serve-config">Loading…</pre>
+      </div>
+    </section>
   </main>
-  <dialog id="logs"><div class="dialog-head"><strong id="log-title">Logs</strong><button onclick="logs.close()">×</button></div><pre id="log-output"></pre></dialog>
+  <dialog id="logs"><div class="dialog-head"><strong id="log-title">Logs</strong><button id="close-logs">×</button></div><pre id="log-output"></pre></dialog>
   <script src="app.js"></script>
 </body></html>
