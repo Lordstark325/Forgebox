@@ -55,6 +55,18 @@ $env:FORGEBOX_TAILSCALE = 'C:\Program Files\Tailscale\tailscale.exe'
 npm start
 ```
 
+## ForgeNet: independent private networking
+
+[`forgenet/`](forgenet/) is a separate, self-hosted WireGuard coordination-plane MVP for building an independent Tailscale-like network. It includes one-time enrollment, private IP allocation, peer discovery, revocation, Windows and Android clients, and automated tests.
+
+Tested client downloads are available in [`releases/forgenet/`](releases/forgenet/):
+
+- `ForgeNet-Android-0.1.1.apk`
+- `ForgeNet-Windows-0.1.exe`
+- `ForgeNet-Apps-0.1.1.zip`
+
+ForgeNet currently requires reachable WireGuard peer endpoints. NAT traversal, relay infrastructure, access-control policies, and private DNS remain roadmap work.
+
 ## Independence roadmap
 
 1. **Current MVP:** engine-neutral dashboard and safe command adapter.
